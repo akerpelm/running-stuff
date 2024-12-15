@@ -1,5 +1,5 @@
 import { AppSidebar } from "./app-sidebar";
-import { SidebarProvider, SidebarTrigger, useSidebar } from "../ui/sidebar";
+import { SidebarProvider, useSidebar } from "../ui/sidebar";
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import {
@@ -13,8 +13,9 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
 import { ModeToggle } from "../mode-toggle";
-import { Button } from "../ui/button";
 import { Sidebar } from "lucide-react";
+import { useTheme } from "../theme-provider";
+import { Toaster } from "../ui/sonner";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -56,6 +57,11 @@ const components: { title: string; href: string; description: string }[] = [
 
 export function NavigationMenuDemo() {
   const { toggleSidebar } = useSidebar();
+  const { theme, setTheme } = useTheme();
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
   return (
     <NavigationMenu className="mt-0.5">
       <NavigationMenuList>
@@ -123,7 +129,10 @@ export function NavigationMenuDemo() {
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
-        <NavigationMenuItem>
+        <NavigationMenuItem
+          className={navigationMenuTriggerStyle()}
+          onClick={toggleTheme}
+        >
           <ModeToggle />
         </NavigationMenuItem>
       </NavigationMenuList>
@@ -160,7 +169,7 @@ ListItem.displayName = "ListItem";
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
-      <div className="flex h-screen w-screen ">
+      <div className="flex h-screen w-screen px-4 ">
         <AppSidebar />
         <div className="flex-1 flex flex-col">
           <header>
@@ -168,7 +177,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </header>
 
           {/* Main Page Content */}
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 mt-8">{children}</main>
+          <Toaster />
         </div>
       </div>
     </SidebarProvider>
